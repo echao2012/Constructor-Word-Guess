@@ -5,6 +5,9 @@ var Letter = function(value) {
     this.check = function(letterGuess) {
         if(letterGuess === this.value) {
             this.guessed = true;
+            return true;
+        } else {
+            return false;
         }
     }
 }
