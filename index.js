@@ -2,7 +2,13 @@ var chalk = require("chalk");
 var inquirer = require("inquirer");
 var Word = require("./Word");
 
-var words = ["poodle", "Chimpanzee", "dinosaur"];
+var words = ["Jurassic Park",
+             "Beauty and the Beast",
+             "The Wizard of Oz",
+             "Finding Nemo",
+             "Forrest Gump",
+             "Gone with the Wind"];
+             
 var currentWord, guesses, guessedLetters;
 
 function playNewWord() {
@@ -18,6 +24,9 @@ function playNewWord() {
         // Remove the word from the array
         words.splice(iWord, 1);
 
+        // Show the word (will be all underscores)
+        console.log(chalk.yellow("\n" + currentWord + "\n"));
+
         // Start the game for this word
         playLetter();
     }
@@ -25,8 +34,6 @@ function playNewWord() {
 
 function playLetter() {
     if(guesses > 0 && !currentWord.letters.every(item => item.guessed)) {
-        // Show the word
-        console.log(chalk.yellow("\n" + currentWord + "\n"));
 
         inquirer.prompt([
             {
@@ -62,6 +69,9 @@ function playLetter() {
                 console.log(chalk.green("\nCORRECT\n"));
             }
 
+            // Show the word
+            console.log(chalk.yellow("\n" + currentWord + "\n"));
+
             // Guess the next letter
             playLetter();
         })
@@ -80,7 +90,6 @@ function playLetter() {
         // Move on to the next word
         playNewWord();
     }
-
 }
 
 // Start the game
