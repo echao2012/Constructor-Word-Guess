@@ -1,13 +1,15 @@
+var chalk = require("chalk");
 var inquirer = require("inquirer");
 var Word = require("./Word");
 
-var words = ["poodle", "chimpanzee", "dinosaur"];
-var currentWord, guesses;
+var words = ["poodle", "Chimpanzee", "dinosaur"];
+var currentWord, guesses, guessedLetters;
 
 function playNewWord() {
     if(words.length > 0) {
-        // Reset the guesses remaining
+        // Reset the guesses remaining and guessed letters
         guesses = 10;
+        guessedLetters = [];
 
         // Choose a word randomly
         var iWord = Math.floor(Math.random() * words.length)
@@ -16,39 +18,70 @@ function playNewWord() {
         // Remove the word from the array
         words.splice(iWord, 1);
 
-        // Start the game
-        console.log("\n" + currentWord + "\n");
+        // Start the game for this word
         playLetter();
     }
 }
 
 function playLetter() {
     if(guesses > 0 && !currentWord.letters.every(item => item.guessed)) {
+        // Show the word
+        console.log(chalk.yellow("\n" + currentWord + "\n"));
+
         inquirer.prompt([
             {
                 name: "letter",
-                message: "Guess a letter:"
+                message: "Guess a letter:",
+                validate: function(input) {
+                    // Check if the input is a letter
+                    if(input.length === 1 && input.match(/[a-z]/i)) {
+                        // Check if the user has already entered this letter
+                        if(guessedLetters.indexOf(input) >= 0) {
+                            console.log(chalk.red("\n\nLetter already guessed. Please choose a new letter.\n"))
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    } else {
+                        console.log(chalk.red("\n\nPlease enter a single letter.\n"));
+                        return false;
+                    }
+                }
             }
         ]).then(function(response) {
-            if(!currentWord.guessLetter(response.letter)) {
-                guesses--;
-                console.log("\nINCORRECT");
-                console.log("\nGuesses Remaining: " + guesses);
-            } else {
-                console.log("\nCORRECT");
-            }
-            console.log("\n" + currentWord + "\n");
+            // Add the letter to the array of guessed letters
+            guessedLetters.push(response.letter);
 
+            if(!currentWord.guessLetter(response.letter)) {
+                // The guess was incorrect
+                guesses--;
+                console.log(chalk.red("\nINCORRECT"));
+                console.log("\nGuesses Remaining: " + guesses + "\n");
+            } else {
+                // The guess was correctS
+                console.log(chalk.green("\nCORRECT\n"));
+            }
+
+            // Guess the next letter
             playLetter();
         })
-    } else if (guesses <= 0) {
-        console.log("YOU LOSE!");
-        playNewWord();
     } else {
-        console.log("YOU WIN!");
+        // This round/word is over
+        if (guesses <= 0) {
+            console.log(chalk.red("\nYOU LOSE!\n"));
+        } else {
+            console.log(chalk.green("\nYOU WIN!\n"));
+        }
+        
+        if(words.length > 0) {
+            console.log("\nNext word:");
+        }
+
+        // Move on to the next word
         playNewWord();
     }
 
 }
 
+// Start the game
 playNewWord();

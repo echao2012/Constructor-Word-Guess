@@ -3,7 +3,7 @@ var Letter = function(value) {
     this.guessed = false;
     
     this.check = function(letterGuess) {
-        if(letterGuess === this.value) {
+        if(letterGuess.toLowerCase() === this.value.toLowerCase()) {
             this.guessed = true;
             return true;
         } else {
