@@ -5,7 +5,7 @@ var Word = function(letters) {
     this.letters = letters.split('').map(item => new Letter(item));
 
     this.guessLetter = function(character) {
-        // Check if the charater exists in the word
+        // Check if the character exists in the word
         var result = false;
         this.letters.forEach(item => result = result | item.check(character));
         return result;

@@ -65,7 +65,7 @@ function playLetter() {
                 console.log(chalk.red("\nINCORRECT"));
                 console.log("\nGuesses Remaining: " + guesses + "\n");
             } else {
-                // The guess was correctS
+                // The guess was correct
                 console.log(chalk.green("\nCORRECT\n"));
             }
 
